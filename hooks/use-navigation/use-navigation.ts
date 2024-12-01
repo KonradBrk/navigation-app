@@ -1,6 +1,8 @@
 import { useState, useCallback } from "react";
 import { NavigationItemType } from "@/types/navigation-item";
 import { v4 as uuidv4 } from "uuid";
+import { arrayMove } from "@dnd-kit/sortable";
+import { UniqueIdentifier } from "@dnd-kit/core";
 
 export const useNavigation = () => {
   const [navigationItems, setNavigationItems] = useState<NavigationItemType[]>(
@@ -33,51 +35,44 @@ export const useNavigation = () => {
 
   const reorder = useCallback(
     (
-      sourceId: string,
-      destinationId: string,
-      parentId: string | null = null
+      sourceId: UniqueIdentifier,
+      destinationId: UniqueIdentifier
     ): NavigationItemType[] => {
-      const addItemAtDestination = (
+      const findAndReorder = (
         items: NavigationItemType[],
-        item: NavigationItemType,
-        destinationId: string | null
+        sourceId: UniqueIdentifier,
+        destinationId: UniqueIdentifier
       ): NavigationItemType[] => {
-        if (destinationId === null) {
-          return [...items, item];
+        const sourceIndex = items.findIndex((item) => item.id === sourceId);
+        const destinationIndex = items.findIndex(
+          (item) => item.id === destinationId
+        );
+
+        if (sourceIndex !== -1 && destinationIndex !== -1) {
+          return arrayMove(items, sourceIndex, destinationIndex);
         }
 
-        return items.map((current) => {
-          if (current.id === destinationId) {
-            current.subMenu = [...current.subMenu, item];
-          } else if (current.subMenu.length) {
-            current.subMenu = addItemAtDestination(
-              current.subMenu,
-              item,
+        return items.map((item) => {
+          if (item.subMenu.length) {
+            item.subMenu = findAndReorder(
+              item.subMenu,
+              sourceId,
               destinationId
             );
           }
-          return current;
+          return item;
         });
       };
 
-      const [removedItem, updatedItems] = findAndRemoveItem(
+      const updatedItems = findAndReorder(
         navigationItems,
-        sourceId
+        sourceId,
+        destinationId
       );
-
-      if (!removedItem) {
-        console.error("Source item not found");
-        return navigationItems;
-      }
-
-      const finalItems = parentId
-        ? addItemAtDestination(updatedItems, removedItem, destinationId)
-        : [...updatedItems, removedItem];
-
-      setNavigationItems(finalItems);
-      return finalItems;
+      setNavigationItems(updatedItems);
+      return updatedItems;
     },
-    [findAndRemoveItem, navigationItems]
+    [navigationItems]
   );
 
   const createItem = useCallback(

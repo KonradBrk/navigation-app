@@ -1,11 +1,19 @@
 "use client";
 import type { NavigationItemType } from "@/types/navigation-item";
 import Image from "next/image";
-
+import { CSS } from "@dnd-kit/utilities";
 import { NavigationItemButtons } from "../navigation-item-buttons";
 import { NavigationItemForm } from "@/forms";
 import { classNames } from "@/utils";
 import { useState } from "react";
+import { useSortable } from "@dnd-kit/sortable";
+
+import { DndContext, UniqueIdentifier, closestCenter } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { useDnd } from "@/hooks";
 
 type NavigationItemProps = {
   item: NavigationItemType;
@@ -15,6 +23,10 @@ type NavigationItemProps = {
   updateItem: (updatedItem: NavigationItemType) => NavigationItemType[];
   deleteItem: (id: string) => NavigationItemType[];
   createItem: (parentId?: string) => NavigationItemType[];
+  reorder: (
+    sourceId: UniqueIdentifier,
+    destinationId: UniqueIdentifier
+  ) => NavigationItemType[];
 };
 
 export const NavigationItem = ({
@@ -22,11 +34,20 @@ export const NavigationItem = ({
   updateItem,
   deleteItem,
   createItem,
+  reorder,
   level = 0,
   isLast = false,
   isFirst = false,
 }: NavigationItemProps) => {
+  const { handleDragEnd, sensors } = useDnd(reorder);
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: item.id });
   const [openEditForm, setOpenEditForm] = useState(false);
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   const handleOpenEditForm = () => {
     setOpenEditForm(true);
@@ -57,26 +78,10 @@ export const NavigationItem = ({
 
   const hasSubMenu = item.subMenu?.length > 0;
 
-  const renderSubItems = () => {
-    return (
-      hasSubMenu &&
-      item.subMenu.map((subItem, subIndex) => (
-        <NavigationItem
-          key={subItem.id}
-          item={subItem}
-          level={level + 1}
-          isFirst={subIndex === 0}
-          isLast={subIndex === item.subMenu.length - 1}
-          updateItem={updateItem}
-          deleteItem={deleteItem}
-          createItem={createItem}
-        />
-      ))
-    );
-  };
-
   return (
     <div
+      ref={setNodeRef}
+      style={style}
       className={classNames(
         "w-full bg-gray-50",
         level > 0 && "pl-16",
@@ -91,7 +96,7 @@ export const NavigationItem = ({
         )}
       >
         <div className="flex items-center space-x-4">
-          <div className="cursor-grab">
+          <div className="cursor-grab" {...attributes} {...listeners}>
             <Image src="/move.svg" alt="Move" width={20} height={20} priority />
           </div>
           <div>
@@ -106,7 +111,32 @@ export const NavigationItem = ({
           createItem={createItem}
         />
       </div>
-      {renderSubItems()}
+      {hasSubMenu && (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={item.subMenu}
+            strategy={verticalListSortingStrategy}
+          >
+            {item.subMenu.map((subItem, subIndex) => (
+              <NavigationItem
+                key={subItem.id}
+                item={subItem}
+                level={level + 1}
+                isFirst={subIndex === 0}
+                isLast={subIndex === item.subMenu.length - 1}
+                updateItem={updateItem}
+                deleteItem={deleteItem}
+                createItem={createItem}
+                reorder={reorder}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
+      )}
     </div>
   );
 };

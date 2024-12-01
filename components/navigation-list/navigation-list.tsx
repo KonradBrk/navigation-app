@@ -9,7 +9,7 @@ export const NavigationList = () => {
   const { navigationItems, createItem, updateItem, deleteItem } =
     useNavigation();
 
-  if (navigationItems.length === 0) {
+  if (!navigationItems.length) {
     return (
       <div className="flex gap-2 flex-col w-full">
         <NavigationListEmptyState onClick={() => createItem()} />

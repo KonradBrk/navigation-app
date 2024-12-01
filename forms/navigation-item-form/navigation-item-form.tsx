@@ -18,12 +18,14 @@ type NavigationItemFormProps = {
   item: NavigationItemType;
   updateItem: (updatedItem: NavigationItemType) => NavigationItemType[];
   deleteItem: (id: string) => NavigationItemType[];
+  handleCloseEditForm: () => void;
 };
 
 export const NavigationItemForm = ({
   updateItem,
   deleteItem,
   item,
+  handleCloseEditForm,
 }: NavigationItemFormProps) => {
   const { control, handleSubmit } = useForm<NavigationItemFormData>({
     resolver: zodResolver(schema),
@@ -37,6 +39,15 @@ export const NavigationItemForm = ({
 
   const onSubmit = (data: NavigationItemFormData) => {
     updateItem(data as NavigationItemType);
+    handleCloseEditForm();
+  };
+
+  const handleCancel = () => {
+    if (!item?.name) {
+      deleteItem(item.id);
+    } else {
+      handleCloseEditForm();
+    }
   };
 
   return (
@@ -77,7 +88,7 @@ export const NavigationItemForm = ({
 
         <div className="flex gap-2 mt-3">
           <button
-            onClick={() => deleteItem(item.id)}
+            onClick={handleCancel}
             type="button"
             className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-200 focus:outline-none focus:ring focus:ring-gray-300"
           >

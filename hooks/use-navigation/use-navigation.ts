@@ -64,6 +64,7 @@ export const useNavigation = () => {
         navigationItems,
         sourceId
       );
+
       if (!removedItem) {
         console.error("Source item not found");
         return navigationItems;
@@ -77,26 +78,6 @@ export const useNavigation = () => {
       return finalItems;
     },
     [findAndRemoveItem, navigationItems]
-  );
-
-  const getById = useCallback(
-    (id: string): NavigationItemType | null => {
-      const findItem = (
-        items: NavigationItemType[]
-      ): NavigationItemType | null => {
-        for (const item of items) {
-          if (item.id === id) return item;
-          if (item.subMenu.length) {
-            const found = findItem(item.subMenu);
-            if (found) return found;
-          }
-        }
-        return null;
-      };
-
-      return findItem(navigationItems);
-    },
-    [navigationItems]
   );
 
   const createItem = useCallback(
@@ -121,7 +102,6 @@ export const useNavigation = () => {
         setNavigationItems(addToSubmenu(navigationItems));
       }
 
-      console.log("navigationItems", navigationItems);
       return navigationItems;
     },
     [navigationItems]
@@ -170,7 +150,6 @@ export const useNavigation = () => {
   return {
     navigationItems,
     reorder,
-    getById,
     createItem,
     updateItem,
     deleteItem,

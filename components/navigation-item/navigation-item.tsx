@@ -1,9 +1,11 @@
+"use client";
 import type { NavigationItemType } from "@/types/navigation-item";
 import Image from "next/image";
 
 import { NavigationItemButtons } from "../navigation-item-buttons";
 import { NavigationItemForm } from "@/forms";
 import { classNames } from "@/utils";
+import { useState } from "react";
 
 type NavigationItemProps = {
   item: NavigationItemType;
@@ -24,7 +26,17 @@ export const NavigationItem = ({
   isLast = false,
   isFirst = false,
 }: NavigationItemProps) => {
-  if (!item.name) {
+  const [openEditForm, setOpenEditForm] = useState(false);
+
+  const handleOpenEditForm = () => {
+    setOpenEditForm(true);
+  };
+
+  const handleCloseEditForm = () => {
+    setOpenEditForm(false);
+  };
+
+  if (!item.name || openEditForm) {
     return (
       <div
         className={classNames(
@@ -37,6 +49,7 @@ export const NavigationItem = ({
           item={item}
           updateItem={updateItem}
           deleteItem={deleteItem}
+          handleCloseEditForm={handleCloseEditForm}
         />
       </div>
     );
@@ -89,7 +102,7 @@ export const NavigationItem = ({
         <NavigationItemButtons
           item={item}
           deleteItem={deleteItem}
-          updateItem={updateItem}
+          handleOpenEditForm={handleOpenEditForm}
           createItem={createItem}
         />
       </div>

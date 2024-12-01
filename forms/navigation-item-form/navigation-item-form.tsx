@@ -77,6 +77,7 @@ export const NavigationItemForm = ({
 
         <div className="flex gap-2 mt-3">
           <button
+            onClick={() => deleteItem(item.id)}
             type="button"
             className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-200 focus:outline-none focus:ring focus:ring-gray-300"
           >

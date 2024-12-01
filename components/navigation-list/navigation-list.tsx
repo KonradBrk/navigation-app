@@ -25,10 +25,6 @@ export const NavigationList = () => {
           item={item}
           isLast={navigationItems.length - 1 === index}
           isFirst={index === 0}
-          isPreviousHasSubMenu={
-            navigationItems[index - 1]?.subMenu &&
-            navigationItems[index - 1]?.subMenu.length > 0
-          }
           deleteItem={deleteItem}
           updateItem={updateItem}
           createItem={createItem}

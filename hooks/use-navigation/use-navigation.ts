@@ -9,30 +9,6 @@ export const useNavigation = () => {
     []
   );
 
-  const findAndRemoveItem = useCallback(
-    (
-      items: NavigationItemType[],
-      id: string
-    ): [NavigationItemType | null, NavigationItemType[]] => {
-      const updatedItems = [];
-      let removedItem: NavigationItemType | null = null;
-
-      for (const item of items) {
-        if (item.id === id) {
-          removedItem = item;
-        } else if (item.subMenu.length) {
-          const [subRemoved, updatedSub] = findAndRemoveItem(item.subMenu, id);
-          if (subRemoved) removedItem = subRemoved;
-          item.subMenu = updatedSub;
-        }
-        updatedItems.push(item);
-      }
-
-      return [removedItem, updatedItems];
-    },
-    []
-  );
-
   const reorder = useCallback(
     (
       sourceId: UniqueIdentifier,
@@ -82,19 +58,19 @@ export const useNavigation = () => {
       if (!parentId) {
         setNavigationItems([...navigationItems, newItem]);
       } else {
-        const addToSubmenu = (
+        const addToSubmenuRecursively = (
           items: NavigationItemType[]
         ): NavigationItemType[] =>
           items.map((current) => {
             if (current.id === parentId) {
               current.subMenu = [...current.subMenu, newItem];
             } else if (current.subMenu.length) {
-              current.subMenu = addToSubmenu(current.subMenu);
+              current.subMenu = addToSubmenuRecursively(current.subMenu);
             }
             return current;
           });
 
-        setNavigationItems(addToSubmenu(navigationItems));
+        setNavigationItems(addToSubmenuRecursively(navigationItems));
       }
 
       return navigationItems;
@@ -104,17 +80,19 @@ export const useNavigation = () => {
 
   const updateItem = useCallback(
     (updatedItem: NavigationItemType): NavigationItemType[] => {
-      const updateItem = (items: NavigationItemType[]): NavigationItemType[] =>
+      const updateItemRecursively = (
+        items: NavigationItemType[]
+      ): NavigationItemType[] =>
         items.map((current) => {
           if (current.id === updatedItem.id) {
             return { ...current, ...updatedItem };
           } else if (current.subMenu.length) {
-            current.subMenu = updateItem(current.subMenu);
+            current.subMenu = updateItemRecursively(current.subMenu);
           }
           return current;
         });
 
-      const updatedItems = updateItem(navigationItems);
+      const updatedItems = updateItemRecursively(navigationItems);
       setNavigationItems(updatedItems);
       return updatedItems;
     },

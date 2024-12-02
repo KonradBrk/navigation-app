@@ -19,7 +19,16 @@ export const NavigationListEmptyState = ({
         className="flex items-center gap-2 mt-4 px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 transition"
         onClick={onClick}
       >
-        <Image src="/add.svg" alt="" width={20} height={20} priority />
+        <Image
+          src="/add.svg"
+          alt=""
+          width={20}
+          height={20}
+          style={{
+            width: "20px",
+            height: "20px",
+          }}
+        />
         Dodaj pozycję menu
       </button>
     </div>

@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { TextInput } from "@/forms/fields";
+import { AutoCompleteInput, TextInput } from "@/forms/fields";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { NavigationItemType } from "@/types/navigation-item";
@@ -80,7 +80,7 @@ export const NavigationItemForm = ({
           name="name"
         />
 
-        <TextInput
+        <AutoCompleteInput
           id="link"
           label="Link"
           icon={
@@ -89,6 +89,7 @@ export const NavigationItemForm = ({
           placeholder="Wklej lub wyszukaj"
           control={control}
           name="url"
+          options={["https://droplo.com/pl"]}
         />
 
         <div className="flex gap-2 mt-3">

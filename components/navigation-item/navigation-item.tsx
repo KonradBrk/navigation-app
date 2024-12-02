@@ -100,7 +100,7 @@ export const NavigationItem = ({
             <Image src="/move.svg" alt="Move" width={20} height={20} priority />
           </div>
           <div>
-            <p className="font-medium text-gray-800">{item.name}</p>
+            <p className="text-sm font-semibold text-gray-800">{item.name}</p>
             <p className="text-sm text-gray-500">{item.url}</p>
           </div>
         </div>

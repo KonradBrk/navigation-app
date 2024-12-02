@@ -63,7 +63,7 @@ export const AutoCompleteInput = <T extends FieldValues>({
           autoComplete="off"
           onChange={handleInputChange}
           placeholder={placeholder}
-          className={`block w-full p-2 rounded-md border ${
+          className={` placeholder:text-slate-500 block w-full p-2 rounded-md border ${
             fieldState.error ? "border-red-500" : "border-gray-300"
           } ${icon ? "pl-10" : "pl-2"}`}
           onFocus={() => setShowDropdown(true)}

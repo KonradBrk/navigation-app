@@ -35,7 +35,7 @@ export const NavigationList = () => {
         items={navigationItems}
         strategy={verticalListSortingStrategy}
       >
-        <div className="w-full border border-gray-300 rounded-md">
+        <div className="flex flex-col items-end w-full border bg-gray-50 border-gray-300 rounded-md">
           {navigationItems.map((item, index) => (
             <NavigationItem
               key={item.id}

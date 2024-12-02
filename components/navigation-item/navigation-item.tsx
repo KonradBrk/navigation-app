@@ -61,7 +61,7 @@ export const NavigationItem = ({
     return (
       <div
         className={classNames(
-          "bg-gray-50 px-6 pt-4",
+          "bg-gray-50 px-6 pt-4 w-full",
           level > 0 && "pl-16",
           isLast && "pb-4"
         )}
@@ -83,7 +83,7 @@ export const NavigationItem = ({
       ref={setNodeRef}
       style={style}
       className={classNames(
-        "w-full bg-gray-50",
+        "w-full",
         level > 0 && "pl-16",
         isFirst && level === 0 && "rounded-t-md"
       )}
@@ -121,19 +121,21 @@ export const NavigationItem = ({
             items={item.subMenu}
             strategy={verticalListSortingStrategy}
           >
-            {item.subMenu.map((subItem, subIndex) => (
-              <NavigationItem
-                key={subItem.id}
-                item={subItem}
-                level={level + 1}
-                isFirst={subIndex === 0}
-                isLast={subIndex === item.subMenu.length - 1}
-                updateItem={updateItem}
-                deleteItem={deleteItem}
-                createItem={createItem}
-                reorder={reorder}
-              />
-            ))}
+            <div className="flex flex-col items-end w-full">
+              {item.subMenu.map((subItem, subIndex) => (
+                <NavigationItem
+                  key={subItem.id}
+                  item={subItem}
+                  level={level + 1}
+                  isFirst={subIndex === 0}
+                  isLast={subIndex === item.subMenu.length - 1}
+                  updateItem={updateItem}
+                  deleteItem={deleteItem}
+                  createItem={createItem}
+                  reorder={reorder}
+                />
+              ))}
+            </div>
           </SortableContext>
         </DndContext>
       )}

@@ -10,7 +10,7 @@ export const NavigationListEmptyState = ({
   onClick,
 }: NavigationListEmptyStateProps) => {
   return (
-    <div className="flex flex-col items-center justify-center w-full h-64 bg-gray-50 border border-gray-300 rounded-md p-6">
+    <div className="flex flex-col items-center justify-center w-full h-[160px] bg-gray-50 border border-gray-300 rounded-md p-6">
       <p className="text-lg font-semibold text-gray-800">Menu jest puste</p>
       <p className="text-sm text-gray-600">
         W tym menu nie ma jeszcze żadnych linków.

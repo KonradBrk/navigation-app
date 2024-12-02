@@ -18,11 +18,7 @@ export const NavigationList = () => {
   const { handleDragEnd, sensors } = useDnd(reorder);
 
   if (!navigationItems.length) {
-    return (
-      <div className="flex gap-2 flex-col w-full">
-        <NavigationListEmptyState onClick={() => createItem()} />
-      </div>
-    );
+    return <NavigationListEmptyState onClick={() => createItem()} />;
   }
 
   return (

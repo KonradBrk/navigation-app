@@ -6,9 +6,14 @@ import Image from "next/image";
 import { NavigationItemType } from "@/types/navigation-item";
 
 const schema = z.object({
-  id: z.string(),
-  name: z.string(),
-  url: z.string().url("Link musi być poprawnym URL"),
+  id: z.string().optional(),
+  name: z.string({
+    message: "Wymagane",
+  }),
+  url: z
+    .string()
+    .url({ message: "Link musi być w poprawnym formacie URL" })
+    .optional(),
 });
 
 type NavigationItemFormData = z.infer<typeof schema>;
@@ -31,9 +36,9 @@ export const NavigationItemForm = ({
     resolver: zodResolver(schema),
     mode: "onTouched",
     defaultValues: {
-      id: item?.id ?? "",
-      name: item?.name ?? "",
-      url: item?.url ?? "",
+      id: item?.id ?? undefined,
+      name: item?.name ?? undefined,
+      url: item?.url ?? undefined,
     },
   });
 

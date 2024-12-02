@@ -42,6 +42,7 @@ export const TextInput = <T extends FieldValues>({
           id={id}
           type={type}
           {...field}
+          value={field.value || ""}
           onChange={handleInputChange}
           placeholder={placeholder}
           className={`block w-full p-2 rounded-md border ${
